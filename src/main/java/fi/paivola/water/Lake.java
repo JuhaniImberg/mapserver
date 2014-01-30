@@ -60,10 +60,10 @@ public class Lake extends PointModel {
     @Override
     public void onTick(DataFrame last, DataFrame current) {
         // make some difference to the temperature
-        //temperature = Double.parseDouble(last.getGlobalString("temperature"));
-        temperature = 14.8;
-        //daytimeLength = Double.parseDouble(last.getGlobalString("sunlight"));
-        daytimeLength = 1;
+        temperature = Double.parseDouble(last.getGlobalString("temperature"));
+        //temperature = 14.8;
+        daytimeLength = Double.parseDouble(last.getGlobalString("sunlight"))/12;
+        //daytimeLength = 1;
 
         // calculate the air humidity and the evapotranspiration for it
         airHumidity = (double) (6.108f * Math.exp((17.27f * temperature) / (temperature + 273.3)));
@@ -78,8 +78,8 @@ public class Lake extends PointModel {
 
         String[] entries;
 
-        //rainfall = Double.parseDouble(last.getGlobalString("rain")) / 1000;
-        rainfall = 1.96 / 1000;
+        rainfall = Double.parseDouble(last.getGlobalString("rain")) / 1000;
+        //rainfall = 1.96 / 1000;
         double actualRainfall = basinArea * rainfall * 7 * terrainCoefficient;
         waterAmount += actualRainfall;
 
