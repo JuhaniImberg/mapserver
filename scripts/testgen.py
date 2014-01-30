@@ -36,7 +36,7 @@ def main():
                 data = template
 
                 for inx2, vari in enumerate(row):
-                    data = data.replace("$" + str(inx2), vari)
+                    data = data.replace("$" + str(inx2) + "\n", vari+"\n")
 
                 fname = os.path.join("out", "testcase_" + str(inx) + ".csv")
 
