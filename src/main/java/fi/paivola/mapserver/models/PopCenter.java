@@ -50,7 +50,7 @@ public class PopCenter extends PointModel {
         if (isPort){
             if (last != null && last.getGlobalData("devAid") != null){
                 double aid = (double)last.getGlobalData("devAid");
-                aid *= 20;
+                aid *= 2000;
                 Store(new Supplies(0,aid/2));
                 Store(new Supplies(1,aid/2));
             }

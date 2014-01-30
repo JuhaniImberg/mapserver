@@ -7,3 +7,6 @@ output.png
 octave-core
 *.mkv
 *.swp
+out.tar.gz
+scripts/tmp
+test/*

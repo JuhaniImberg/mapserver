@@ -25,12 +25,12 @@ public class River extends ConnectionModel {
     //CSVWriter writer;
     // General (dimensions and stuff
     double waterAmount = 0;              //  m^3
-    double width = 100;                   //  m
-    double length = 1000000;             //  m
+    double width = 50;                   //  m
+    double length = 10000;             //  m
     double startDepth = 0;
     double floodDepth = 10;
     double flowDepth = 0.5;
-    double slope = 45;
+    double slope = 30;
     int order = 0;
     
     public River(int id) {
@@ -72,11 +72,11 @@ public class River extends ConnectionModel {
                 this.addEventToAll(current, e);
             }
         }
-        /*
-        String[] entries = (waterAmount/1000000000 + "#" + flow/1000000+"#"+(flood?1:0)).split("#");
+        
+        String[] entries = (waterAmount/1000000000 + "#" + flow/100000000+"#"+(flood?1:0)).split("#");
         for (int i = 0; i < entries.length; i++) {
             entries[i] = entries[i].trim();
-        }
+        }/*
         if (writer != null) {
             writer.writeNext(entries);
         }*/
@@ -94,9 +94,9 @@ public class River extends ConnectionModel {
         sm.settings.put("order", new SettingInt("Position in the hydrodynamic chain", 0, new RangeInt(0, 100)));
         sm.settings.put("width", new SettingDouble("Width of the river", 100, new RangeDouble(0,Double.MAX_VALUE)));
         sm.settings.put("length", new SettingDouble("Length of the river", 10000, new RangeDouble(0,Double.MAX_VALUE)));
-        sm.settings.put("startDepth", new SettingDouble("Start water depth", 0.1, new RangeDouble(0,1)));
+        sm.settings.put("startDepth", new SettingDouble("Start water depth", 0.1, new RangeDouble(0,Double.MAX_VALUE)));
         sm.settings.put("floodDepth", new SettingDouble("Flood water depth", 10, new RangeDouble(0,Double.MAX_VALUE)));
-        sm.settings.put("flowDepth", new SettingDouble("River starts to flow when over this", 0.5, new RangeDouble(0,1)));
+        sm.settings.put("flowDepth", new SettingDouble("River starts to flow when over this", 0.5, new RangeDouble(0,Double.MAX_VALUE)));
         sm.settings.put("slope", new SettingDouble("Width of the river", 20, new RangeDouble(0,90)));
         sm.color = new Color(0, 0, 255);
         sm.name = "River";
@@ -123,8 +123,8 @@ public class River extends ConnectionModel {
             this.saveDouble("floodDepth",floodDepth);
             this.saveDouble("flowDepth",flowDepth);
             this.saveDouble("slope",slope);
-            /*
-        if (writer == null) {
+            
+        /*if (writer == null) {
             try {
                 writer = new CSVWriter(new FileWriter(this.id + ".csv"), ',');
             } catch (IOException e) {
