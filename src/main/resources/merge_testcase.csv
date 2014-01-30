@@ -136,6 +136,20 @@ defparam, Road, rainMod, 0.1
 defparam, Road, transportType, 1
 defparam, Road, roadType, 1
 
+# Hypercube generated parameters
+defparam, Field, MaissiVesi, 2.6
+defparam, Field, MaissiLämpö, 30
+defparam, Field, DurraVesi, 2.5
+defparam, Field, DurraLämpö, 33
+defparam, Weather, sade, 25
+defparam, Weather, dLämpö, 5.14
+defparam, PopCenter, pilaan%, 0.12
+defparam, PopCenter, kuormurit, 48
+defparam, Lake, terrainCoefficient, 0.97
+defparam, Lake, startAmount, 0.75
+defparam, DevelopmentAid, kehitysapu, 546.875
+defparam, DevelopmentAid, vehnä, 469
+
 # Kismayo
 param, kismayo, initialPopulation, 183000
 param, kismayo, isPort, true
@@ -173,7 +187,7 @@ param, afmadow-field, area, 45000
 
 set, ticks, 120
 set, runs, 1
-set, name, defParamTest_allModels
+set, name, hypercube_test
 
 dump, population
 waste, population, kismayo, totalPopulation

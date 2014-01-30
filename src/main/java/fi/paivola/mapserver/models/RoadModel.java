@@ -130,7 +130,7 @@ public class RoadModel extends ConnectionModel {
         return !roadBlocked;
     }
     
-    public Supplies[] calcDelivery(Supplies sent){
+    public synchronized Supplies[] calcDelivery(Supplies sent){
         Supplies lost = new Supplies(sent.id, sent.amount * stealage);
         stolenGoods.add(lost);
         Supplies delivered = new Supplies(sent.id, Math.min(sent.amount - lost.amount, remainingCapacityThisTick));
