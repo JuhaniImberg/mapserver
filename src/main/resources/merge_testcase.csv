@@ -147,8 +147,8 @@ defparam, PopCenter, spoilingRate, 0.12
 defparam, PopCenter, vehicles, 48
 defparam, Lake, terrainCoefficient, 0.97
 defparam, Lake, startAmount, 0.75
-defparam, DevelopmentAid, kehitysapu, 546.875
-defparam, DevelopmentAid, vehnä, 469
+defparam, DevelopmentAid, devAidStart, 546
+defparam, DevelopmentAid, wheatPrice, 469
 
 # Kismayo
 param, kismayo, initialPopulation, 183000
