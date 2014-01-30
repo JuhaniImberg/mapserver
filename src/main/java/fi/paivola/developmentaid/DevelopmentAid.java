@@ -73,7 +73,7 @@ public class DevelopmentAid extends GlobalModel {
     @Override
     public void onGenerateDefaults(DataFrame df) {
         this.saveDouble("lastDevAid", devAid);
-        df.saveGlobalData("DevAid", getAid(df.index));
+        df.saveGlobalData("devAid", getAid(df.index));
     }
 
     @Override

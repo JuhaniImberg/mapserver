@@ -48,7 +48,7 @@ public class PopCenter extends PointModel {
     @Override
     public void onTick(DataFrame last, DataFrame current) {
         if (isPort){
-            double aid = (double)current.getGlobalData("devAid");
+            double aid = (double)last.getGlobalData("devAid");
             Store(new Supplies(0,aid/2));
             Store(new Supplies(1,aid/2));
         }

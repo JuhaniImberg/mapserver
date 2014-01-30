@@ -138,6 +138,7 @@ defparam, Road, roadType, 1
 
 # Kismayo
 param, kismayo, initialPopulation, 183000
+param, kismayo, isPort, true
 
 # Jilib
 param, jilib, initialPopulation, 45000
