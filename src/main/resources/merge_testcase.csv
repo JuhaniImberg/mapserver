@@ -7,6 +7,9 @@ command, argument1, argument2, argument3
 # Global weather
 model, Weather~weather
 
+# Global development aid
+model, DevelopmentAid~devaid
+
 # KISMAYO (satama), pop: 183000
 model, PopCenter~kismayo
 
@@ -135,6 +138,7 @@ defparam, Road, roadType, 1
 
 # Kismayo
 param, kismayo, initialPopulation, 183000
+param, kismayo, isPort, true
 
 # Jilib
 param, jilib, initialPopulation, 45000
