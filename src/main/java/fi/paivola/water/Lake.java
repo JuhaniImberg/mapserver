@@ -21,7 +21,6 @@ import java.util.*;
 import java.io.FileWriter;
 
 public class Lake extends PointModel {
-    //(Näsijärvi)
 
     // General stuff
     //CSVWriter writer = null;
@@ -35,12 +34,12 @@ public class Lake extends PointModel {
     double daytimeLength = 1;                // x/12h
 
     // Lake dimensions and water amount 
-    double surfaceArea = 256120000.0;       // m^2
-    double depth = 14.1f;                   // m       flood water level
+    double surfaceArea = 256120000;       // m^2
+    double depth = 14.1;                   // m       flood water level
     double waterAmount = 0;                 // m^3
 
-    double startAmount = 0.9;               // percent of flood amount in the beginning
-    double flowAmount = 0.91;               // percent of flood amount before starts to flow
+    double startAmount = 0;               // percent of flood amount in the beginning
+    double flowAmount = 0;               // percent of flood amount before starts to flow
 
     // Flows
     double C;                                // Chezy variable  
@@ -49,6 +48,8 @@ public class Lake extends PointModel {
     double basinArea = 7642000000.0;           // m^2
     double rainfall = 0;                      // m^3
     double terrainCoefficient = 0.5f;         // unitless, how much of the rainfall ends up to the lake
+    
+    double floodVolume = 0.0;
 
     // Weather
     public Lake(int id) {
@@ -59,12 +60,14 @@ public class Lake extends PointModel {
     @Override
     public void onTick(DataFrame last, DataFrame current) {
         // make some difference to the temperature
-        temperature = Double.parseDouble(last.getGlobalString("temperature"));
-        daytimeLength = Double.parseDouble(last.getGlobalString("sunlight"));
+        //temperature = Double.parseDouble(last.getGlobalString("temperature"));
+        temperature = 14.8;
+        //daytimeLength = Double.parseDouble(last.getGlobalString("sunlight"));
+        daytimeLength = 1;
 
         // calculate the air humidity and the evapotranspiration for it
         airHumidity = (double) (6.108f * Math.exp((17.27f * temperature) / (temperature + 273.3)));
-        evapotranspiration = k * 0.165f * 216.7f * daytimeLength * (airHumidity / (temperature + 273.3f)) * 7 / 1000000 * surfaceArea;
+        evapotranspiration = k * 0.165f * 216.7f * daytimeLength * (airHumidity / (temperature + 273.3f)) * 7 / 1000 * surfaceArea;
 
         // substract the evaporation from our current water reserves and check that we won't end up having negative amounts of water
         if (waterAmount - evapotranspiration < 0) {
@@ -75,20 +78,21 @@ public class Lake extends PointModel {
 
         String[] entries;
 
-        rainfall = Double.parseDouble(last.getGlobalString("rain")) / 1000;
-        double actualRainfall = basinArea * rainfall * terrainCoefficient;
+        //rainfall = Double.parseDouble(last.getGlobalString("rain")) / 1000;
+        rainfall = 1.96 / 1000;
+        double actualRainfall = basinArea * rainfall * 7 * terrainCoefficient;
         waterAmount += actualRainfall;
 
         double flow = 0;
 
         //if the water level is over the boundaries of the lake, count the overflowing amount water
-        if (waterAmount > depth * flowAmount * surfaceArea) {
+        if (waterAmount > flowAmount * surfaceArea) {
             // the depth of the overflowing water
-            double currentDepth = (waterAmount - surfaceArea * depth * flowAmount) / surfaceArea;
+            double currentDepth = waterAmount / surfaceArea;
             // calculate the chezy variable used in the chezy flow speed equation
             C = (double) ((1 / 0.03f) * Math.pow(currentDepth, 1 / 6));
             // calculate the speed of the overflowing watermass
-            double speed = (double) (C * Math.sqrt(0.05 * currentDepth));
+            double speed = (double) (C * Math.sqrt(7.5 * currentDepth));
             // calculate the amount of water that is going to leave
             flow = speed * (double) Math.sqrt(surfaceArea) * currentDepth;
             // substract the flow from the water in the lake if we have any rivers connected to this lake
@@ -119,21 +123,23 @@ public class Lake extends PointModel {
         // write the data to a .csv - file -- wateramount, actual rainfall and flow in km^3
         Event e;
         Boolean flood = false;
+        int f = 0;
         if (waterAmount > surfaceArea * depth) {
-            flood = true;
+            f = 1;
+            flood = true; 
             e = new Event("Flood", Event.Type.OBJECT, flood);
             this.addEventToAll(current, e);
         }
-        
-         entries = (waterAmount/1000000000 + "#" + evapotranspiration/1000000 + "#" + temperature + "#" + actualRainfall/basinArea+ "#" + flow/1000000000+"#"+(flood?1:0)).split("#");
-        
-         /*for (int i = 0; i < entries.length; i++) {
-         entries[i] = entries[i].trim();
-         }
 
-         if (writer != null) {
-         writer.writeNext(entries);
-         }*/
+        entries = (f+   "#"+ waterAmount / 1000000000 + "#" + evapotranspiration + "#" + temperature + "#" + daytimeLength + "#" + actualRainfall + "#" + flow / 10000000).split("#");
+        
+        for (int i = 0; i < entries.length; i++) {
+            entries[i] = entries[i].trim();
+        }
+/*
+        if (writer != null) {
+            writer.writeNext(entries);
+        }*/
     }
 
     @Override
@@ -148,13 +154,13 @@ public class Lake extends PointModel {
     @Override
     public void onRegisteration(GameManager gm, SettingMaster sm) {
         sm.settings.put("order", new SettingInt("Position in the hydrodynamic chain", 0, new RangeInt(0, 100)));
-        sm.settings.put("k", new SettingDouble("Hamon coefficient", 1.0, new RangeDouble(0, 10)));
-        sm.settings.put("surfaceArea", new SettingDouble("sufraceArea", 256120000.0, new RangeDouble(0, Double.MAX_VALUE)));
-        sm.settings.put("depth", new SettingDouble("Flood depth", 14.1, new RangeDouble(0, Double.MAX_VALUE)));
-        sm.settings.put("startAmount", new SettingDouble("Start water depth", 0.9, new RangeDouble(0.0, 1.0)));
-        sm.settings.put("flowAmount", new SettingDouble("Flowing starts water depth", 0.91, new RangeDouble(0, 1)));
-        sm.settings.put("basinArea", new SettingDouble("Drainage basin area", 7642000000.0, new RangeDouble(0, Double.MAX_VALUE)));
-        sm.settings.put("terrainCoefficient", new SettingDouble("Terrain flow coefficient", 0.5, new RangeDouble(0, Double.MAX_VALUE)));
+        sm.settings.put("k", new SettingDouble("Hamon coefficient", 0, new RangeDouble(0, 10)));
+        sm.settings.put("surfaceArea", new SettingDouble("sufraceArea",0, new RangeDouble(0, Double.MAX_VALUE)));
+        sm.settings.put("depth", new SettingDouble("Flood depth", 0, new RangeDouble(0, Double.MAX_VALUE)));
+        sm.settings.put("startAmount", new SettingDouble("Start water depth", 0, new RangeDouble(0.0, Double.MAX_VALUE)));
+        sm.settings.put("flowAmount", new SettingDouble("Flowing starts water depth", 0, new RangeDouble(0, Double.MAX_VALUE)));
+        sm.settings.put("basinArea", new SettingDouble("Drainage basin area", 0, new RangeDouble(0, Double.MAX_VALUE)));
+        sm.settings.put("terrainCoefficient", new SettingDouble("Terrain flow coefficient", 0, new RangeDouble(0, Double.MAX_VALUE)));
         sm.color = new Color(0, 0, 255);
         sm.name = "Lake";
         sm.type = "Lake";
@@ -166,31 +172,31 @@ public class Lake extends PointModel {
 
     @Override
     public void onUpdateSettings(SettingMaster sm) {
-            this.order = Integer.parseInt(sm.settings.get("order").getValue());
-            this.k = Double.parseDouble(sm.settings.get("k").getValue());
-            this.surfaceArea = Double.parseDouble(sm.settings.get("surfaceArea").getValue());
-            this.depth = Double.parseDouble(sm.settings.get("depth").getValue());
-            this.startAmount = Double.parseDouble(sm.settings.get("startAmount").getValue());
-            this.flowAmount = Double.parseDouble(sm.settings.get("flowAmount").getValue());
-            this.basinArea = Double.parseDouble(sm.settings.get("basinArea").getValue());
-            this.terrainCoefficient = Double.parseDouble(sm.settings.get("terrainCoefficient").getValue());   
-            this.saveInt("order", order);
-            this.saveDouble("k",k);
-            this.saveDouble("surfaceArea",surfaceArea);
-            this.saveDouble("depth",k);
-            this.saveDouble("startAmount",k);
-            this.saveDouble("flowAmount",k);
-            this.saveDouble("basinArea",k);
-            this.saveDouble("terrainCoefficient",k);
-            
-            waterAmount = surfaceArea * startAmount*depth;
-        
-         /*if (writer == null) {
-         try {
-         writer = new CSVWriter(new FileWriter(this.id + ".csv"), ',');
-         } catch (IOException e) {
-         System.out.println(e.toString());
-         }
-         }*/
+        this.order = Integer.parseInt(sm.settings.get("order").getValue());
+        this.k = Double.parseDouble(sm.settings.get("k").getValue());
+        this.surfaceArea = Double.parseDouble(sm.settings.get("surfaceArea").getValue());
+        this.depth = Double.parseDouble(sm.settings.get("depth").getValue());
+        this.startAmount = Double.parseDouble(sm.settings.get("startAmount").getValue());
+        this.flowAmount = Double.parseDouble(sm.settings.get("flowAmount").getValue());
+        this.basinArea = Double.parseDouble(sm.settings.get("basinArea").getValue());
+        this.terrainCoefficient = Double.parseDouble(sm.settings.get("terrainCoefficient").getValue());
+        this.saveInt("order", order);
+        this.saveDouble("k", k);
+        this.saveDouble("surfaceArea", surfaceArea);
+        this.saveDouble("depth", k);
+        this.saveDouble("startAmount", k);
+        this.saveDouble("flowAmount", k);
+        this.saveDouble("basinArea", k);
+        this.saveDouble("terrainCoefficient", k);
+/*
+        if (writer == null) {
+            try {
+                writer = new CSVWriter(new FileWriter(this.id + ".csv"), ',');
+            } catch (IOException e) {
+                System.out.println(e.toString());
+            }
+        }*/
+        waterAmount = surfaceArea * startAmount;
+        floodVolume = surfaceArea*depth;
     }
 }
