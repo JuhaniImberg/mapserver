@@ -127,14 +127,14 @@ public class DevelopmentAid extends GlobalModel {
 
            return (kehitysapu);
             }
-            //kehitysapu=muutavehnäksi(kehitysapu);
+            //kehitysapu=muutavehnaksi(kehitysapu);
  
         }
 
-        double muutavehnäksi(double arvo) {
-            double vehnä = 0;
+        double muutavehnaksi(double arvo) {
+            double vehna = 0;
 
-            return vehnä;
+            return vehna;
         }
 
         double muutarahaksi(double arvo) {

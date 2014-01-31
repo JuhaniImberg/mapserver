@@ -186,7 +186,7 @@ param, afmadow-field, area, 45000
 ############
 
 set, ticks, 1043
-set, runs, 10
+set, runs, 100
 set, name, hypercube_test
 
 dump, population

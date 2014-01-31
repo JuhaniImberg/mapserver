@@ -48,29 +48,29 @@ public class Oil extends GlobalModel{
     private static class Oljy{
        public static Object oljy(int index){
         Random random=new Random();
-        float öljy=60; 
+        float Ã¶ljy=60; 
         for (int i=0; i<index;i++){    
-            int öljykriisi=random.nextInt(520);
+            int Ã¶ljykriisi=random.nextInt(520);
             int nousulasku=random.nextInt(2);
             double lol=random.nextDouble();
             
     
-            if (öljykriisi == 0){
+            if (Ã¶ljykriisi == 0){
                 nousulasku=3;
                 }
             if (nousulasku==0){
-                öljy += (lol*4);
+                Ã¶ljy += (lol*4);
                 }
             else if(nousulasku==1){
-                öljy += (lol*(-4));
+                Ã¶ljy += (lol*(-4));
                 }
             else{
-                öljy += (lol*6);
+                Ã¶ljy += (lol*6);
                 }
 
         }
-    System.out.println(öljy);
-    return öljy;   
+    System.out.println(Ã¶ljy);
+    return Ã¶ljy;   
     
     }
     }
