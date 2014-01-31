@@ -37,7 +37,8 @@ def main():
         tx.pop(0)
         for i in tx:
             try:
-                listof.append([i.split(",")[ind1], i.split(",")[ind2]])
+                listof.append(
+                    [float(i.split(",")[ind1]), float(i.split(",")[ind2])])
             except IndexError:
                 pass
 
@@ -54,9 +55,12 @@ def main():
                 avg = average(vals)
                 #variance = map(lambda x: (x - avg) ** 2, vals)
                 #standard_deviation = math.sqrt(average(variance))
-                listofpurkka.append(avg)
-                liststr.append(
-                    "%s, %s, %f" % (listof[ind - 1][0], listof[ind - 1][1], avg))
+                try:
+                    listofpurkka.append(avg)
+                    liststr.append(
+                        "%s, %s, %f" % (listof[ind - 1][0], listof[ind - 1][1], avg))
+                except IndexError:
+                    pass
                     #(ind, listof[ind - 1][0], listof[ind - 1][1], avg, average(variance), standard_deviation))
             vals = []
             ind += 1
