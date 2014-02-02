@@ -63,7 +63,7 @@ for i in t:
 	if len(la) == 1:
 		break
 	xArr.append( remap(float(la[0]), paramAMin, paramAMax) * WIDTH )
-	yArr.append( remap(float(la[1]), paramBMin, paramBMax) * HEIGHT )
+	yArr.append( HEIGHT - remap(float(la[1]), paramBMin, paramBMax) * HEIGHT )
 	heatArr.append( remap(float(la[2]), heatMin, heatMax) )
 
 cumulHeatMax = 0
